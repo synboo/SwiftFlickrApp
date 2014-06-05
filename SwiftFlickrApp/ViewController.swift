@@ -20,6 +20,7 @@ class ViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         getFlickrPhotos()
     }
 
@@ -70,6 +71,7 @@ class ViewController: UICollectionViewController {
     
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize {
         var itemSize :CGSize = (self.layoutType == LayoutType.Grid) ? CGSizeMake(80, 80) : CGSizeMake(320, 150)
+        
         return itemSize
     }
     
@@ -82,6 +84,7 @@ class ViewController: UICollectionViewController {
         default:
             self.layoutType = LayoutType.Grid
         }
+        
         self.collectionView.reloadData()
     }
     
