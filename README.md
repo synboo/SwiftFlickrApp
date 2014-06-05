@@ -2,8 +2,8 @@ SwiftFlickrApp
 ==============
 
 Flickr popular photo viewer with Swift
-
-http://synboo.hatenablog.com/entry/2014/06/05/235618
+* Swift iPhone application sample using UICollectionView and AFNetworking
+* More detail is here: http://synboo.hatenablog.com/entry/2014/06/05/235618
 
 ![VideoGif](https://raw.githubusercontent.com/synboo/SwiftFlickrApp/master/Video.gif)
 
