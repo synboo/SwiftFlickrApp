@@ -37,28 +37,28 @@ class ViewController: UICollectionViewController
         let parameters :Dictionary = [
             "method"         : "flickr.interestingness.getList",
             "api_key"        : "86997f23273f5a518b027e2c8c019b0f",
-            "per_page"       : "300",
+            "per_page"       : "100",
             "format"         : "json",
             "nojsoncallback" : "1",
             "extras"         : "url_q,url_z",
         ]
+        let requestSuccess = {
+            (operation :AFHTTPRequestOperation!, responseObject :AnyObject!) -> Void in
+            SVProgressHUD.dismiss()
+            self.photos = responseObject.objectForKey("photos").objectForKey("photo") as Array
+            self.collectionView.reloadData()
+            NSLog("requestSuccess \(responseObject)")
+        }
+        let requestFailure = {
+            (operation :AFHTTPRequestOperation!, error :NSError!) -> Void in
+            SVProgressHUD.dismiss()
+            NSLog("requestFailure: \(error)")
+        }
         SVProgressHUD.show()
         manager.GET(url, parameters: parameters, success: requestSuccess, failure: requestFailure)
     }
-
-    func requestSuccess (operation :AFHTTPRequestOperation!, responseObject :AnyObject!) -> Void
-    {
-        SVProgressHUD.dismiss()
-        self.photos = responseObject.objectForKey("photos").objectForKey("photo") as Array
-        self.collectionView.reloadData()
-        NSLog("requestSuccess \(responseObject)")
-    }
     
-    func requestFailure (operation :AFHTTPRequestOperation!, error :NSError!) -> Void
-    {
-        SVProgressHUD.dismiss()
-        NSLog("requestFailure: \(error)")
-    }
+    // MARK: - UICollectionView
     
     override func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int
     {
@@ -67,12 +67,26 @@ class ViewController: UICollectionViewController
     
     override func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell!
     {
-        var photoCell: PhotoCell = self.collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as PhotoCell
-        var photoInfo = photos[indexPath.item] as Dictionary
-        var photoUrl = (self.layoutType == LayoutType.Grid) ? photoInfo["url_q"] : photoInfo["url_z"]
-        photoCell.photoImageView.setImageWithURL(NSURL.URLWithString(photoUrl))
-        photoCell.photoInfo = photoInfo
+        let photoCell: PhotoCell = self.collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as PhotoCell
+        let photoInfo = photos[indexPath.item] as Dictionary
+        let photoUrlString = (self.layoutType == LayoutType.Grid) ? photoInfo["url_q"] : photoInfo["url_z"]
+        let photoUrlRequest : NSURLRequest = NSURLRequest(URL: NSURL.URLWithString(photoUrlString))
         
+        let imageRequestSuccess = {
+            (request : NSURLRequest!, response : NSHTTPURLResponse!, image : UIImage!) -> Void in
+            photoCell.photoImageView.image = image;
+            photoCell.photoImageView.alpha = 0
+            UIView.animateWithDuration(0.2, animations: {
+                    photoCell.photoImageView.alpha = 1.0
+            })
+        }
+        let imageRequestFailure = {
+            (request : NSURLRequest!, response : NSHTTPURLResponse!, error : NSError!) -> Void in
+            NSLog("imageRequrestFailure")
+        }
+        photoCell.photoImageView.setImageWithURLRequest(photoUrlRequest, placeholderImage: nil, success: imageRequestSuccess, failure: imageRequestFailure)
+
+        photoCell.photoInfo = photoInfo
         return photoCell;
     }
     
