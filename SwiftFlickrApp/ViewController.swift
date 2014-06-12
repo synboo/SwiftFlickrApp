@@ -8,27 +8,30 @@
 
 import UIKit
 
-enum LayoutType: Int {
+enum LayoutType: Int
+{
     case Grid = 0
     case List = 1
 }
 
-class ViewController: UICollectionViewController {
-    
+class ViewController: UICollectionViewController
+{
     var photos:Dictionary<String, String>[] = []
     var layoutType = LayoutType.Grid
     
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-        
         getFlickrPhotos()
     }
 
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
     }
     
-    func getFlickrPhotos() {
+    func getFlickrPhotos()
+    {
         let manager :AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
         let url :String = "https://api.flickr.com/services/rest/"
         let parameters :Dictionary = [
@@ -43,23 +46,27 @@ class ViewController: UICollectionViewController {
         manager.GET(url, parameters: parameters, success: requestSuccess, failure: requestFailure)
     }
 
-    func requestSuccess (operation :AFHTTPRequestOperation!, responseObject :AnyObject!) -> Void {
+    func requestSuccess (operation :AFHTTPRequestOperation!, responseObject :AnyObject!) -> Void
+    {
         SVProgressHUD.dismiss()
         self.photos = responseObject.objectForKey("photos").objectForKey("photo") as Array
         self.collectionView.reloadData()
         NSLog("requestSuccess \(responseObject)")
     }
     
-    func requestFailure (operation :AFHTTPRequestOperation!, error :NSError!) -> Void {
+    func requestFailure (operation :AFHTTPRequestOperation!, error :NSError!) -> Void
+    {
         SVProgressHUD.dismiss()
         NSLog("requestFailure: \(error)")
     }
     
-    override func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int {
+    override func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int
+    {
         return self.photos.count;
     }
     
-    override func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell! {
+    override func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell!
+    {
         var photoCell: PhotoCell = self.collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as PhotoCell
         var photoInfo = photos[indexPath.item] as Dictionary
         var photoUrl = (self.layoutType == LayoutType.Grid) ? photoInfo["url_q"] : photoInfo["url_z"]
@@ -69,13 +76,14 @@ class ViewController: UICollectionViewController {
         return photoCell;
     }
     
-    func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize {
+    func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize
+    {
         var itemSize :CGSize = (self.layoutType == LayoutType.Grid) ? CGSizeMake(80, 80) : CGSizeMake(320, 150)
-        
         return itemSize
     }
     
-    @IBAction func segmentedControlDidChanged(control : UISegmentedControl) {
+    @IBAction func segmentedControlDidChanged(control : UISegmentedControl)
+    {
         switch control.selectedSegmentIndex {
         case 0:
             self.layoutType = LayoutType.Grid
@@ -88,9 +96,11 @@ class ViewController: UICollectionViewController {
         self.collectionView.reloadData()
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-        if segue.identifier == "ShowPhoto" {
-            var photoCell : PhotoCell = sender as PhotoCell
+    override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!)
+    {
+        if segue.identifier == "ShowPhoto"
+        {
+            let photoCell : PhotoCell = sender as PhotoCell
             var photoViewController = segue.destinationViewController as PhotoViewController
             photoViewController.photoInfo = photoCell.photoInfo
         }

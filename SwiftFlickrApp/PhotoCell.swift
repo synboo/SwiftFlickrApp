@@ -8,16 +8,18 @@
 
 import UIKit
 
-class PhotoCell: UICollectionViewCell {
-
+class PhotoCell: UICollectionViewCell
+{
     @IBOutlet var photoImageView : UIImageView
     var photoInfo : Dictionary<String, String>?
     
-    init(coder aDecoder: NSCoder!) {
-        super.init(coder: aDecoder)
-    }
+//    init(coder aDecoder: NSCoder!)
+//    {
+//        super.init(coder: aDecoder)
+//    }
     
-    override func prepareForReuse() {
+    override func prepareForReuse()
+    {
         super.prepareForReuse()
         self.photoImageView.image = nil
     }
