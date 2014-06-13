@@ -37,7 +37,7 @@ class ViewController: UICollectionViewController
         let parameters :Dictionary = [
             "method"         : "flickr.interestingness.getList",
             "api_key"        : "86997f23273f5a518b027e2c8c019b0f",
-            "per_page"       : "100",
+            "per_page"       : "99",
             "format"         : "json",
             "nojsoncallback" : "1",
             "extras"         : "url_q,url_z",
@@ -92,7 +92,15 @@ class ViewController: UICollectionViewController
     
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize
     {
-        var itemSize :CGSize = (self.layoutType == LayoutType.Grid) ? CGSizeMake(80, 80) : CGSizeMake(320, 150)
+        var itemSize : CGSize
+        if self.layoutType == LayoutType.Grid
+        {
+            itemSize = (indexPath.item%3 == 1) ? CGSizeMake(106, 106) : CGSizeMake(107, 106)
+        }
+        else
+        {
+            itemSize = CGSizeMake(320, 150)
+        }
         return itemSize
     }
     
